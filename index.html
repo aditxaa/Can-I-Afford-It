@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Can I Afford It</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+/* VOICE everyday, a little cheeky: a reality check for your wishlist
+   IDEA a shop price tag and a coin jar: what it costs vs what you have
+   PICTURE a glass jar that fills with coins to the share of the price you already have
+   COLOUR white ground, sale-tag coral band, coin gold accent, near-black ink
+   TYPE Archivo 900 for figures and titles, Archivo for text
+   LAYOUT laptop: inputs | jar | verdict in one coral band; phone: title, jar+verdict, inputs */
+:root{color-scheme:light dark;--bg:light-dark(#ffffff,#141012);--ink:light-dark(#18141a,#f6f1ee);--band:light-dark(#ff5a43,#3a1712);--onband:light-dark(#18141a,#fbe9e4);--panel:light-dark(#ffffff,#1f191b);--soft:light-dark(#fff3ef,#1c1517);--line:light-dark(#eadfda,#3b3134);--muted:light-dark(#655b61,#b6abb0);--coral:light-dark(#e8361f,#ff7a63);--gold:#ffc83d;--gold2:#d99a0b;--good:light-dark(#0b7a43,#56d391);--glass:light-dark(#ffffff,#2b2326)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+html{scroll-padding-top:72px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Archivo,system-ui,sans-serif;overflow-x:clip}
+h1,h2,h3{font-weight:900;line-height:1.05;letter-spacing:-.02em;text-wrap:balance;margin:0}
+h1{font-size:clamp(34px,5vw,52px)}
+h2{font-size:clamp(26px,3.4vw,36px)}
+p{margin:0}
+.wrap{max-width:1240px;margin:0 auto}
+.band{padding-block:clamp(28px,4vw,56px);padding-inline:max(5vw,16px)}
+nav{background:var(--band);color:var(--onband);padding:14px max(5vw,16px) 0}
+nav .wrap{display:flex;flex-wrap:wrap;gap:8px 22px;align-items:center}
+.logo{font-weight:900;font-size:20px;letter-spacing:-.02em;margin-right:auto;display:flex;gap:8px;align-items:center;color:inherit;text-decoration:none}
+nav a.l{color:inherit;text-decoration:none;font-weight:500;padding:8px 0}
+nav a.l:hover{text-decoration:underline}
+.hero{background:var(--band);color:var(--onband)}
+.hero .lead{font-size:17px;max-width:60ch;margin-top:10px}
+.grid{display:grid;gap:20px;margin-top:26px;grid-template-columns:minmax(0,380px) minmax(0,1fr) minmax(0,1fr);grid-template-areas:"in jar res";align-items:stretch}
+.in{grid-area:in}.jarbox{grid-area:jar}.res{grid-area:res}
+.panel{background:var(--panel);color:var(--ink);border-radius:18px;padding:22px}
+.jarbox{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.jarbox svg{width:100%;max-width:330px;height:auto;display:block}
+.cap{font-weight:700;margin-top:6px}
+.cap b{font-size:clamp(30px,4vw,44px);font-weight:900;display:block;line-height:1}
+label,.lab{display:block;font-weight:700;font-size:14px;margin:14px 0 6px}
+.chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.chip{font:inherit;font-size:14px;font-weight:700;min-height:64px;border:2px solid var(--line);background:var(--panel);color:var(--ink);border-radius:12px;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:6px}
+.chip svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linejoin:round;stroke-linecap:round}
+.chip:hover{border-color:var(--coral)}
+.chip[aria-pressed=true]{border-color:var(--coral);background:var(--soft);color:var(--coral)}
+.money{display:flex;align-items:center;border:2px solid var(--line);border-radius:12px;background:var(--panel);padding:0 12px}
+.money span{font-weight:700;color:var(--muted)}
+.money:focus-within,input[type=text]:focus{border-color:var(--coral);outline:none}
+input[type=number],input[type=text]{font:inherit;font-size:16px;color:var(--ink);background:transparent;border:0;padding:11px 8px;width:100%;min-height:46px}
+input[type=text]{border:2px solid var(--line);border-radius:12px;padding:11px 12px;background:var(--panel)}
+input:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 12px}
+.hint{font-size:13px;color:var(--muted);margin-top:6px}
+.res h3{font-size:clamp(26px,3vw,34px)}
+.res .sub{margin-top:10px;font-size:16px}
+.big{font-size:clamp(56px,7vw,84px);font-weight:900;line-height:.95;letter-spacing:-.03em;margin-top:16px;color:var(--coral)}
+.big small{font-size:.3em;letter-spacing:0;color:var(--ink);margin-left:6px}
+.rows{margin-top:18px;border-top:1px solid var(--line)}
+.rows div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.rows b,.nw{white-space:nowrap;font-variant-numeric:tabular-nums}
+.btn{font:inherit;font-weight:800;font-size:15px;min-height:46px;padding:0 18px;border-radius:999px;border:2px solid var(--ink);background:var(--ink);color:var(--bg);cursor:pointer;margin-top:18px}
+.btn:hover{background:var(--coral);border-color:var(--coral);color:#fff}
+.sec{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:clamp(20px,4vw,56px);align-items:start}
+.sec .intro p{margin-top:12px;color:var(--muted);max-width:46ch}
+.soft{background:var(--soft)}
+.q{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.seg{display:flex;flex:none;border:2px solid var(--line);border-radius:999px;overflow:hidden}
+.seg button{font:inherit;font-weight:700;font-size:14px;min-width:56px;min-height:44px;border:0;background:transparent;color:var(--ink);cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--ink);color:var(--bg)}
+.meter{margin-top:22px;height:14px;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--coral));position:relative}
+.meter i{position:absolute;top:-7px;width:28px;height:28px;border-radius:50%;background:var(--panel);border:4px solid var(--ink);transform:translateX(-50%);transition:left .4s}
+.ends{display:flex;justify-content:space-between;font-size:14px;font-weight:700;margin-top:10px}
+.verdict{margin-top:18px;padding:18px;border-radius:14px;background:var(--panel);border:2px solid var(--line)}
+.verdict b{font-size:22px;font-weight:900;display:block}
+.figs{display:grid;grid-template-columns:repeat(auto-fit,minmax(9em,1fr));gap:12px}
+.fg{background:var(--panel);border:2px solid var(--line);border-radius:14px;padding:16px}
+.fg b{display:block;font-size:clamp(26px,3vw,34px);font-weight:900;white-space:nowrap;letter-spacing:-.02em}
+.fg span{font-size:14px;color:var(--muted)}
+.slider{margin-top:6px}
+input[type=range]{width:100%;accent-color:var(--coral);height:44px}
+.ok{color:var(--good);font-weight:700}.no{color:var(--coral);font-weight:700}
+.months{display:grid;grid-template-columns:repeat(auto-fill,minmax(88px,1fr));gap:8px;margin-top:18px}
+.mo{border-radius:12px;padding:10px;background:var(--panel);border:2px solid var(--line);font-size:14px}
+.mo b{display:block;font-size:15px}
+.mo .bar{height:6px;border-radius:9px;background:var(--line);margin-top:8px;overflow:hidden}
+.mo .bar i{display:block;height:100%;background:var(--gold)}
+.mo.buy{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.mo.buy .bar i{background:var(--gold)}
+.sw{display:flex;gap:12px;align-items:center;padding:12px 14px;border:2px solid var(--line);border-radius:14px;margin-bottom:10px;cursor:pointer;background:var(--panel)}
+.sw input{width:22px;height:22px;accent-color:var(--coral);flex:none}
+.sw span{flex:1}
+.sw:has(input:checked){border-color:var(--coral)}
+.tbl{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+.tbl th{text-align:left;font-size:14px;color:var(--muted);font-weight:700;padding:8px 6px;border-bottom:2px solid var(--line)}
+.tbl td{padding:12px 6px;border-bottom:1px solid var(--line)}
+.tbl .r{text-align:right;white-space:nowrap}
+.tbl .barc{width:40%}
+.hb{height:12px;border-radius:9px;background:var(--coral);min-width:4px}
+.tbl tr.cur td{font-weight:800}
+footer{background:var(--band);color:var(--onband)}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:end}
+footer h2{max-width:20ch}
+.mbar{display:none}
+#coin{transform:translateY(-70px);opacity:0}
+.drop #coin{animation:drop .7s ease-in}
+@keyframes drop{0%{transform:translateY(-70px);opacity:0}20%{opacity:1}85%{transform:translateY(8px);opacity:1}100%{transform:translateY(14px);opacity:0}}
+#fill{transition:transform .6s cubic-bezier(.3,1.3,.5,1)}
+@media(prefers-reduced-motion:reduce){#fill,.meter i{transition:none}.drop #coin{animation:none}}
+@media(max-width:1000px){.grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-areas:"jar res" "in res"}}
+@media(max-width:900px){.sec{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:640px){.grid{grid-template-columns:minmax(0,1fr);grid-template-areas:"jar" "res" "in"}.jarbox svg{max-width:220px}nav a.l{display:none}.mbar{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:5;justify-content:space-between;gap:10px;padding:10px 16px;background:var(--ink);color:var(--bg);font-weight:700;font-size:15px}body{padding-bottom:48px}.tbl{font-size:14px}.tbl .barc{width:28%}.chips{grid-template-columns:repeat(3,minmax(0,1fr))}}
+</style>
+</head>
+<body>
+<nav><div class="wrap">
+  <a class="logo" href="#top"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="#ffc83d" stroke="currentColor" stroke-width="2.5"/><path d="M9 9h8M9 12.5h8M11 9c4 0 4 7 0 7l5 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Can I Afford It?</a>
+  <a class="l" href="#check">Need or want</a><a class="l" href="#plan">Saving plan</a><a class="l" href="#swaps">Swaps</a><a class="l" href="#wishlist">Wishlist</a>
+</div></nav>
+
+<header class="hero band" id="top"><div class="wrap">
+  <h1>You want it. Your wallet has questions.</h1>
+  <p class="lead">Tell it what you have and what you want. It tells you if you can buy it today, how much to save if you can't, and whether you even need it.</p>
+  <div class="grid">
+    <form class="panel in" id="f" autocomplete="off">
+      <span class="lab">What do you want?</span>
+      <div class="chips" id="chips"></div>
+      <div class="two">
+        <div><label for="name">Item</label><input type="text" id="name"></div>
+        <div><label for="price">Price</label><div class="money"><span>₹</span><input type="number" id="price" min="0" inputmode="numeric"></div></div>
+      </div>
+      <div class="two">
+        <div><label for="bal">Money you have</label><div class="money"><span>₹</span><input type="number" id="bal" min="0" inputmode="numeric"></div></div>
+        <div><label for="save">You can save / month</label><div class="money"><span>₹</span><input type="number" id="save" min="0" inputmode="numeric"></div></div>
+      </div>
+      <label for="cush">Keep aside for emergencies</label>
+      <div class="money"><span>₹</span><input type="number" id="cush" min="0" inputmode="numeric"></div>
+      <p class="hint">Sample prices, approximate. Type the real price you've seen.</p>
+    </form>
+    <div class="jarbox" aria-hidden="true">
+      <svg viewBox="0 0 320 380" id="jar">
+        <defs>
+          <clipPath id="jc"><path id="jp" d="M100 72H220V92Q220 104 234 114Q270 140 270 184V322Q270 350 242 350H78Q50 350 50 322V184Q50 140 86 114Q100 104 100 92Z"/></clipPath>
+          <pattern id="coins" width="44" height="16" patternUnits="userSpaceOnUse"><rect width="44" height="16" fill="#f2b21f"/><ellipse cx="22" cy="8" rx="19" ry="6" fill="#ffc83d" stroke="#c98a06" stroke-width="2"/><ellipse cx="0" cy="0" rx="19" ry="6" fill="#ffd66b" stroke="#c98a06" stroke-width="2"/><ellipse cx="44" cy="0" rx="19" ry="6" fill="#ffd66b" stroke="#c98a06" stroke-width="2"/><ellipse cx="0" cy="16" rx="19" ry="6" fill="#ffd66b" stroke="#c98a06" stroke-width="2"/><ellipse cx="44" cy="16" rx="19" ry="6" fill="#ffd66b" stroke="#c98a06" stroke-width="2"/></pattern>
+        </defs>
+        <ellipse cx="160" cy="362" rx="118" ry="12" fill="#000" opacity=".18"/>
+        <use href="#jp" fill="var(--glass)" opacity=".55"/>
+        <g clip-path="url(#jc)"><g id="fill" style="transform:translateY(240px)"><rect x="40" y="108" width="240" height="250" fill="url(#coins)"/><rect x="40" y="104" width="240" height="8" fill="#ffe08a"/></g></g>
+        <path d="M64 300V200Q64 160 92 138" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" opacity=".75"/>
+        <use href="#jp" fill="none" stroke="currentColor" stroke-width="5"/>
+        <g id="coin"><ellipse cx="160" cy="26" rx="16" ry="16" fill="#ffc83d" stroke="#c98a06" stroke-width="3"/><path d="M154 20h12M154 26h12" stroke="#c98a06" stroke-width="2.5"/></g>
+        <rect x="90" y="42" width="140" height="32" rx="9" fill="var(--panel)" stroke="currentColor" stroke-width="5"/>
+        <rect x="138" y="52" width="44" height="8" rx="4" fill="currentColor"/>
+        <path d="M108 66v-14M120 66v-14M200 66v-14M212 66v-14" stroke="currentColor" stroke-width="3" opacity=".35"/>
+      </svg>
+      <p class="cap"><b id="pct">0%</b><span id="capt">of the price is already in your jar</span></p>
+    </div>
+    <div class="panel res" aria-live="polite">
+      <h3 id="vt">Not yet.</h3>
+      <p class="sub" id="vs"></p>
+      <div class="big" id="vbig"></div>
+      <div class="rows">
+        <div><span>Price</span><b id="r1"></b></div>
+        <div><span>Usable now (after emergency money)</span><b id="r2"></b></div>
+        <div><span>Still need</span><b id="r3"></b></div>
+        <div><span>Yours by</span><b id="r4"></b></div>
+      </div>
+      <button class="btn" type="button" id="copy">Copy my plan</button>
+      <span class="hint" id="copied"></span>
+    </div>
+  </div>
+</div></header>
+
+<section class="band" id="check"><div class="wrap sec">
+  <div class="intro"><h2>Do you need it, or just want it?</h2><p>Five honest answers. Wanting things is fine. Knowing which is which is how you stop money disappearing.</p>
+    <div class="meter"><i id="mk"></i></div><div class="ends"><span>Just a want</span><span>A real need</span></div>
+    <div class="verdict"><b id="nwT"></b><span id="nwS"></span></div>
+  </div>
+  <div id="qs"></div>
+</div></section>
+
+<section class="band soft" id="plan"><div class="wrap">
+  <div class="sec">
+    <div class="intro"><h2 id="planT">Pick a deadline, get a daily number.</h2><p>Big prices feel impossible. Split by days they look like a snack. Drag to choose when you want it.</p>
+      <label for="dl">I want it in <span id="dlv"></span></label>
+      <input type="range" id="dl" min="1" max="24" step="1" class="slider">
+      <p id="feas"></p>
+    </div>
+    <div class="figs" id="figs"></div>
+  </div>
+  <div class="months" id="months"></div>
+  <p class="hint" id="mnote"></p>
+</div></section>
+
+<section class="band" id="swaps"><div class="wrap sec">
+  <div class="intro"><h2>Small swaps, faster goal.</h2><p>Tick what you could cut. The money goes straight to your plan, and every number on the page updates.</p>
+    <div class="figs" style="margin-top:18px"><div class="fg"><b id="swT">₹0</b><span>extra a month</span></div><div class="fg"><b id="swS">0</b><span>months sooner</span></div></div>
+  </div>
+  <div id="sws"></div>
+</div></section>
+
+<section class="band soft" id="wishlist"><div class="wrap">
+  <h2>How long is the whole wishlist?</h2>
+  <p style="margin-top:10px;color:var(--muted)">Every item at your saving rate, starting from what you have now.</p>
+  <div class="scroll" style="margin-top:18px"><table class="tbl"><thead><tr><th>Item</th><th class="r">Price</th><th class="r">Wait</th><th class="barc">Months to save</th></tr></thead><tbody id="wl"></tbody></table></div>
+</div></section>
+
+<footer class="band"><div class="wrap">
+  <h2>Want it, plan it, then buy it without the guilt.</h2>
+  <div><p>A student project. Not financial advice.</p><p class="hint" style="color:inherit;opacity:.8">Prices are rough examples in Indian rupees.</p></div>
+</div></footer>
+<div class="mbar"><span id="mb1"></span><span id="mb2"></span></div>
+
+<script>
+{
+const IC={phone:'<rect x="7" y="2" width="10" height="20" rx="2.5"/><path d="M11 18.5h2"/>',sneakers:'<path d="M2 18h20v-2.5l-6.5-2-3-4.5H9.5l-1 2.5H5l-3 3Z"/><path d="M2 18v-2"/>',headphones:'<path d="M4 15v-3a8 8 0 0 1 16 0v3"/><rect x="3" y="14" width="4.5" height="7" rx="1.5"/><rect x="16.5" y="14" width="4.5" height="7" rx="1.5"/>',laptop:'<rect x="4" y="4.5" width="16" height="11" rx="1.5"/><path d="M2 19h20"/>',watch:'<circle cx="12" cy="12" r="6"/><path d="M9 6.5 9.5 2h5l.5 4.5M9 17.5l.5 4.5h5l.5-4.5M12 9.5V12l1.5 1.5"/>',custom:'<path d="M12 5v14M5 12h14"/>'};
+const P=[{id:'phone',n:'Smartphone',p:69900},{id:'sneakers',n:'Jordans',p:16995},{id:'headphones',n:'Headphones',p:29990},{id:'laptop',n:'Laptop',p:64990},{id:'watch',n:'Smartwatch',p:24900},{id:'custom',n:'Something else',p:5000}];
+const Q=[{id:'broken',t:'My current one is broken, or I don’t have one',w:2},{id:'daily',t:'I’d use it almost every day',w:1},{id:'work',t:'It helps with study, work or health',w:2},{id:'wait',t:'I’d still want it 30 days from now',w:1},{id:'show',t:'Part of the reason is to show it off',w:-2}];
+const SW=[{t:'One less ₹20 chai a day',v:600},{t:'One food delivery fewer a week (₹250)',v:1083},{t:'Pause one ₹199 subscription',v:199},{t:'Skip snacks at two movies a month (₹150 each)',v:300},{t:'Bus or walk instead of a ₹60 auto, 10 days a month',v:600}];
+const D={item:'sneakers',name:'Jordans',price:16995,bal:6500,save:2000,cush:1000,dl:6,q:{broken:0,daily:1,work:0,wait:1,show:1},sw:[0,0,0,0,0]};
+let S=JSON.parse(JSON.stringify(D));
+try{const s=JSON.parse(localStorage.getItem('ciai')||'null');if(s&&typeof s==='object')S=Object.assign(S,s)}catch(e){}
+const $=id=>document.getElementById(id);
+const fmt=new Intl.NumberFormat('en-IN',{style:'currency',currency:'INR',maximumFractionDigits:0});
+const R=v=>fmt.format(Math.round(v));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const mon=n=>{const d=new Date();d.setDate(1);d.setMonth(d.getMonth()+n);return d.toLocaleString('en-IN',{month:'short',year:'numeric'})};
+const mo=n=>{const d=new Date();d.setDate(1);d.setMonth(d.getMonth()+n);return d.toLocaleString('en-IN',{month:'short'})};
+const pl=(n,w)=>n+' '+w+(n===1?'':'s');
+const num=v=>Math.max(0,Number(v)||0);
+
+$('chips').innerHTML=P.map(p=>`<button type="button" class="chip" data-id="${p.id}" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true">${IC[p.id]}</svg>${p.n}</button>`).join('');
+$('qs').innerHTML=Q.map(q=>`<div class="q"><span>${q.t}</span><div class="seg" data-q="${q.id}"><button type="button" data-v="1">Yes</button><button type="button" data-v="0">No</button></div></div>`).join('');
+$('sws').innerHTML=SW.map((s,i)=>`<label class="sw"><input type="checkbox" id="sw${i}" data-i="${i}"><span>${s.t}</span><b class="nw">+${R(s.v)}/mo</b></label>`).join('');
+
+function fill(){['name','price','bal','save','cush','dl'].forEach(k=>$(k).value=S[k]);SW.forEach((s,i)=>$('sw'+i).checked=!!S.sw[i])}
+
+function calc(){
+  const usable=Math.max(0,S.bal-S.cush),gap=Math.max(0,S.price-usable);
+  const swx=SW.reduce((a,s,i)=>a+(S.sw[i]?s.v:0),0),rate=S.save+swx;
+  const m=gap===0?0:(rate>0?Math.ceil(gap/rate):Infinity);
+  const m0=gap===0?0:(S.save>0?Math.ceil(gap/S.save):Infinity);
+  return{usable,gap,swx,rate,m,m0,pct:S.price>0?Math.min(1,usable/S.price):0};
+}
+
+function render(){
+  const c=calc(),nm=S.name.trim()||'it';
+  document.querySelectorAll('.chip').forEach(b=>b.setAttribute('aria-pressed',b.dataset.id===S.item));
+  $('fill').style.transform=`translateY(${(1-c.pct)*240}px)`;
+  $('pct').textContent=Math.round(c.pct*100)+'%';
+  $('capt').textContent=`of the ${nm} price is already in your jar`;
+  let t,s,big;
+  if(S.price<=0){t='Add a price.';s='Pick an item or type what it costs.';big=''}
+  else if(c.gap===0){const left=S.bal-S.price,share=S.bal>0?S.price/S.bal:1;
+    t='Yes, you can buy it today.';
+    s=`You'd still have ${R(left)} left, emergency money included. `+(share>.5?`But it eats ${Math.round(share*100)}% of everything you have. Sleep on it once.`:`It's ${Math.round(share*100)}% of your money, which is comfortable.`);
+    big='Today';}
+  else if(c.m===Infinity){t='Not on ₹0 a month.';s=`You need ${R(c.gap)} more, and nothing is going in. Tick a swap below or add what you can save.`;big='∞'}
+  else{t=`Not yet. Save for ${pl(c.m,'month')}.`;s=`Put away ${R(c.rate)} a month and ${nm} is yours by ${mon(c.m)}.`;big=`${c.m}<small>${c.m===1?'month':'months'}</small>`}
+  $('vt').textContent=t;$('vs').textContent=s;$('vbig').innerHTML=big;
+  $('r1').textContent=R(S.price);$('r2').textContent=R(c.usable);$('r3').textContent=R(c.gap);
+  $('r4').textContent=c.gap===0?'Today':c.m===Infinity?'Never, at this rate':mon(c.m);
+  $('mb1').textContent=nm+' · '+R(S.price);
+  $('mb2').textContent=c.gap===0?'Buy today':c.m===Infinity?'Add savings':`${pl(c.m,'month')} · ${R(c.rate)}/mo`;
+
+  // need vs want
+  let sc=0;Q.forEach(q=>{if(S.q[q.id])sc+=q.w});
+  document.querySelectorAll('.seg').forEach(g=>g.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(S.q[g.dataset.q])===b.dataset.v)));
+  $('mk').style.left=((sc+2)/8*100)+'%';
+  const nw=sc>=4?['You need it.','Plan it properly and buy a good one. Don’t raid your emergency money.']:sc>=2?['A useful want.','Fair to buy, but on a plan, not on impulse. Follow the daily number below.']:['Just a want.','Wait 30 days. If you still want it then, start saving. Most wants fade before the money is ready.'];
+  $('nwT').textContent=nw[0];$('nwS').textContent=nw[1];
+
+  // plan
+  const dl=S.dl;$('dlv').textContent=pl(dl,'month')+' (by '+mon(dl)+')';
+  if(c.gap===0){$('planT').textContent='You already have enough.';
+    $('figs').innerHTML=`<div class="fg"><b>${R(0)}</b><span>to save per day</span></div><div class="fg"><b>${R(S.bal-S.price)}</b><span>left after buying</span></div><div class="fg"><b>${Math.round(S.price/Math.max(1,S.bal)*100)}%</b><span>of your money</span></div>`;
+    $('feas').textContent='Nothing to save. The only question left is need or want.';$('feas').className='ok';}
+  else{const pm=c.gap/dl,pw=c.gap/(dl*52/12),pd=c.gap/(dl*365/12);
+    $('planT').textContent=`${R(pd)} a day gets you ${nm} by ${mon(dl)}.`;
+    $('figs').innerHTML=`<div class="fg"><b>${R(pd)}</b><span>per day</span></div><div class="fg"><b>${R(pw)}</b><span>per week</span></div><div class="fg"><b>${R(pm)}</b><span>per month</span></div>`;
+    const ok=pm<=c.rate;$('feas').className=ok?'ok':'no';
+    $('feas').textContent=ok?`Doable. You save ${R(c.rate)} a month, ${R(c.rate-pm)} more than needed.`:`Tight. That needs ${R(pm-c.rate)} more a month than you save now. Push the date out or add swaps.`;}
+  const n=c.gap===0?0:Math.min(c.m===Infinity?12:c.m,24);
+  $('months').innerHTML=c.gap===0?'':Array.from({length:n},(_,i)=>{const v=Math.min(S.price,c.usable+c.rate*(i+1)),last=i===n-1&&c.m<=24;
+    return `<div class="mo${last?' buy':''}"><b>${last?'Buy it':mo(i+1)}</b><span class="nw">${R(v)}</span><div class="bar"><i style="width:${(v/S.price*100).toFixed(1)}%"></i></div></div>`}).join('');
+  $('mnote').textContent=c.gap===0?'':c.m===Infinity?'With nothing saved each month, the jar never fills.':c.m>24?`Showing two years. At this rate it takes ${c.m} months in total.`:'Your jar month by month, at your current saving rate.';
+
+  // swaps
+  $('swT').textContent=R(c.swx);
+  $('swS').textContent=c.gap===0?'0':(c.m0===Infinity&&c.m!==Infinity?'Now possible':(c.m0===Infinity?'0':String(c.m0-c.m)));
+
+  // wishlist
+  const list=P.filter(p=>p.id!=='custom').map(p=>({n:p.id===S.item?nm:p.n,p:p.id===S.item?S.price:p.p,cur:p.id===S.item}));
+  if(S.item==='custom')list.push({n:nm,p:S.price,cur:true});
+  const ms=list.map(x=>{const g=Math.max(0,x.p-c.usable);return g===0?0:(c.rate>0?Math.ceil(g/c.rate):Infinity)});
+  const mx=Math.max(1,...ms.filter(isFinite));
+  $('wl').innerHTML=list.map((x,i)=>`<tr${x.cur?' class="cur"':''}><td>${esc(x.n)}</td><td class="r">${R(x.p)}</td><td class="r">${ms[i]===0?'Now':ms[i]===Infinity?'—':pl(ms[i],'mo')}</td><td class="barc"><div class="hb" style="width:${ms[i]===Infinity?0:Math.max(2,ms[i]/mx*100)}%"></div></td></tr>`).join('');
+
+  try{localStorage.setItem('ciai',JSON.stringify(S))}catch(e){}
+}
+
+let tm;
+function drop(){const j=$('jar');j.classList.remove('drop');void j.getBoundingClientRect();j.classList.add('drop');clearTimeout(tm);tm=setTimeout(()=>j.classList.remove('drop'),800)}
+
+$('chips').addEventListener('click',e=>{const b=e.target.closest('.chip');if(!b)return;const p=P.find(x=>x.id===b.dataset.id);S.item=p.id;S.name=p.n;S.price=p.p;fill();render();drop()});
+$('f').addEventListener('submit',e=>e.preventDefault());
+['price','bal','save','cush'].forEach(k=>$(k).addEventListener('input',()=>{S[k]=num($(k).value);render();if(k==='bal'||k==='save')drop()}));
+$('name').addEventListener('input',()=>{S.name=$('name').value.slice(0,40);render()});
+$('dl').addEventListener('input',()=>{S.dl=Number($('dl').value)||6;render()});
+$('qs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;S.q[b.parentElement.dataset.q]=Number(b.dataset.v);render()});
+$('sws').addEventListener('change',e=>{const i=Number(e.target.dataset.i);S.sw[i]=e.target.checked?1:0;render();drop()});
+$('copy').addEventListener('click',async()=>{const c=calc(),nm=S.name.trim()||'it';
+  const txt=c.gap===0?`I want ${nm} (${R(S.price)}) and I can afford it today, with ${R(S.bal-S.price)} left over.`:c.m===Infinity?`I want ${nm} (${R(S.price)}). I need ${R(c.gap)} more, so it's time to start saving.`:`I want ${nm} (${R(S.price)}). I have ${R(c.usable)} to spend. Saving ${R(c.rate)} a month, it's mine by ${mon(c.m)}. That's ${R(c.rate/30.44)} a day.`;
+  try{await navigator.clipboard.writeText(txt);$('copied').textContent=' Copied.'}catch(e){$('copied').textContent=' '+txt}});
+fill();render();
+}
+</script>
+</body>
+</html>
